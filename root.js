@@ -45,6 +45,7 @@ export default function statement(invoice, plays) {
         const result = Object.assign({}, performance);
         result.play = playFor(result);
         result.amount = amountFor(result);
+        result.volumeCredits = volumeCreditsFor(result);
         return result;
     }
 
@@ -73,6 +74,15 @@ export default function statement(invoice, plays) {
                 throw new Error(`알 수 없는 장르: ${performance.play.type}`);
         }
 
+        return result;
+    }
+
+    function volumeCreditsFor(performance) {
+        let result = 0;
+        result += Math.max(performance.audience - 30, 0);
+        if ("comedy" === performance.play.type) {
+            result += Math.floor(performance.audience / 5);
+        }
         return result;
     }
 }
@@ -105,17 +115,8 @@ function renderPlainText(statementData) {
     function totalVolumeCredits() {
         let volumeCredits = 0;
         for (let perf of statementData.performances) {
-            volumeCredits += volumeCreditsFor(perf);
+            volumeCredits += perf.volumeCredits;
         }
         return volumeCredits;
-    }
-    
-    function volumeCreditsFor(performance) {
-        let result = 0;
-        result += Math.max(performance.audience - 30, 0);
-        if ("comedy" === performance.play.type) {
-            result += Math.floor(performance.audience / 5);
-        }
-        return result;
     }
 }
