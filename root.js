@@ -39,6 +39,7 @@ export default function statement(invoice, plays) {
     statementData.customer = invoice.customer;
     statementData.performances = invoice.performances.map(enrichPerformance);
     statementData.totalAmount = totalAmount(statementData);
+    statementData.totalVolumeCredits = totalVolumeCredits(statementData);
     return renderPlainText(statementData);
 
     function enrichPerformance(performance) {
@@ -93,6 +94,14 @@ export default function statement(invoice, plays) {
         }
         return result;
     }
+
+    function totalVolumeCredits(statementData) {
+        let volumeCredits = 0;
+        for (let perf of statementData.performances) {
+            volumeCredits += perf.volumeCredits;
+        }
+        return volumeCredits;   
+    }
 }
 
 function renderPlainText(statementData) {
@@ -101,7 +110,7 @@ function renderPlainText(statementData) {
         result += `${perf.play.name}: ${usd(perf.amount)} (${perf.audience}석)\n`;
     }
     result += `총액: ${usd(statementData.totalAmount)}\n`;
-    result += `적립 포인트: ${totalVolumeCredits()}점\n`;
+    result += `적립 포인트: ${statementData.totalVolumeCredits}점\n`;
     return result;
 
     function usd(number) {
@@ -110,13 +119,5 @@ function renderPlainText(statementData) {
             currency: "USD",
             minimumFractionDigits: 2
         }).format(number / 100);
-    }
-
-    function totalVolumeCredits() {
-        let volumeCredits = 0;
-        for (let perf of statementData.performances) {
-            volumeCredits += perf.volumeCredits;
-        }
-        return volumeCredits;   
     }
 }
