@@ -48,12 +48,17 @@ function renderPlainText(data) {
     result += `총액: ${usd(data.totalAmount)}\n`;
     result += `적립 포인트: ${data.totalVolumeCredits}점\n`;
     return result;
+}
 
-    function usd(number) {
-        return new Intl.NumberFormat("en-US", {
-            style: "currency",
-            currency: "USD",
-            minimumFractionDigits: 2
-        }).format(number / 100);
-    }
+// 지금 당장은 구현할 필요가 없으므로 미구현
+function renderHtml(data) {
+
+}
+
+function usd(number) {
+    return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        minimumFractionDigits: 2
+    }).format(number / 100);
 }
