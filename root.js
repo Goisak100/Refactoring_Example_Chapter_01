@@ -38,12 +38,14 @@ export const invoices = [
 // 이를 위해서 데이터 역할을 할 객체를 생성한다.
 
 export default function statement(invoice, plays) {
-    const statementData = {};
+    const statementData = {
+        customer: invoice.customer,
+    };
     return renderPlainText(statementData, invoice, plays);
 }
 
 function renderPlainText(statementData, invoice, plays) {
-    let result = `청구 내역 (고객명: ${invoice.customer})\n`;
+    let result = `청구 내역 (고객명: ${statementData.customer})\n`;
     for (let perf of invoice.performance) {
         result += `${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience}석)\n`;
     }
