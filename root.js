@@ -34,11 +34,15 @@ export const invoices = [
     }
 ]
 
+// 지금부터 하는 작업은 계산 로직에서 데이터를 분리하는 것이다.
+// 이를 위해서 데이터 역할을 할 객체를 생성한다.
+
 export default function statement(invoice, plays) {
-    return renderPlainText(invoice, plays);
+    const statementData = {};
+    return renderPlainText(statementData, invoice, plays);
 }
 
-function renderPlainText(invoice, plays) {
+function renderPlainText(statementData, invoice, plays) {
     let result = `청구 내역 (고객명: ${invoice.customer})\n`;
     for (let perf of invoice.performance) {
         result += `${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience}석)\n`;
