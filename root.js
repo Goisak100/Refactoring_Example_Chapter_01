@@ -17,7 +17,7 @@ export const plays = {
 export const invoices = [
     {
         customer: "BigCo",
-        performance: [
+        performances: [
             {
                 playID: "hamlet",
                 audience: 55,
@@ -34,25 +34,29 @@ export const invoices = [
     }
 ]
 
-// 지금부터 하는 작업은 계산 로직에서 데이터를 분리하는 것이다.
-// invoice.performance의 각 요소에 enrichPerformance 메소드를 실행함으로써
-//  얕은 복사를 수행 후에 반환한다. 이는 불변성을 위함이다.
+
+// 
 export default function statement(invoice, plays) {
     const statementData = {
         customer: invoice.customer,
-        performance: invoice.performance.map(enrichPerformance),
+        performances: invoice.performances.map(enrichPerformance),
     };
     return renderPlainText(statementData, plays);
 
     function enrichPerformance(performance) {
         const result = Object.assign({}, performance);
+        result.play = playFor(result);
         return result;
+    }
+
+    function playFor(performance) {
+        return plays[performance.playID];
     }
 }
 
 function renderPlainText(statementData, plays) {
     let result = `청구 내역 (고객명: ${statementData.customer})\n`;
-    for (let perf of statementData.performance) {
+    for (let perf of statementData.performances) {
         result += `${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience}석)\n`;
     }
     result += `총액: ${usd(totalAmount())}\n`;
@@ -97,7 +101,7 @@ function renderPlainText(statementData, plays) {
 
     function totalAmount() {
         let result = 0;
-        for (let perf of statementData.performance) {
+        for (let perf of statementData.performances) {
             result += amountFor(perf);
         }
         return result;
@@ -105,7 +109,7 @@ function renderPlainText(statementData, plays) {
 
     function totalVolumeCredits() {
         let volumeCredits = 0;
-        for (let perf of statementData.performance) {
+        for (let perf of statementData.performances) {
             volumeCredits += volumeCreditsFor(perf);
         }
         return volumeCredits;
