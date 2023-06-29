@@ -35,13 +35,12 @@ export const invoices = [
 ]
 
 
-// 
 export default function statement(invoice, plays) {
     const statementData = {
         customer: invoice.customer,
         performances: invoice.performances.map(enrichPerformance),
     };
-    return renderPlainText(statementData, plays);
+    return renderPlainText(statementData);
 
     function enrichPerformance(performance) {
         const result = Object.assign({}, performance);
@@ -54,18 +53,18 @@ export default function statement(invoice, plays) {
     }
 }
 
-function renderPlainText(statementData, plays) {
+// plays 매개변수를 제거했다.
+// 여기에서 performance.playID를 직접 사용하지 않고, performance.play.name을 사용한다.
+// 둘 모두 결과는 동일하지만, 전자는 변수를 직접 참조하는 것이고, 후자는 함수에 의해 관리하는 것이다.
+// 즉, 어떤 변경사항이 생겼을 때(이름이 변경되는 등) 후자의 경우가 더욱 쉽게 관리할 수 있다.
+function renderPlainText(statementData) {
     let result = `청구 내역 (고객명: ${statementData.customer})\n`;
-    for (let perf of statementData.performances) {
-        result += `${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience}석)\n`;
+    for (let performance of statementData.performances) {
+        result += `${performance.play.name}: ${usd(amountFor(performance))} (${performance.audience}석)\n`;
     }
     result += `총액: ${usd(totalAmount())}\n`;
     result += `적립 포인트: ${totalVolumeCredits()}점\n`;
     return result;
-
-    function playFor(performance) {
-        return plays[performance.playID];
-    }
 
     function usd(number) {
         return new Intl.NumberFormat("en-US", {
@@ -78,7 +77,7 @@ function renderPlainText(statementData, plays) {
     function amountFor(performance) {
         let result = 0;
 
-        switch (playFor(performance).type) {
+        switch (performance.play.type) {
             case "tragedy":
                 result = 40000;
                 if (performance.audience > 30) {
@@ -93,7 +92,7 @@ function renderPlainText(statementData, plays) {
                 result += 300 * performance.audience;
                 break;
             default:
-                throw new Error(`알 수 없는 장르: ${playFor(performance).type}`);
+                throw new Error(`알 수 없는 장르: ${performance.play.type}`);
         }
 
         return result;
@@ -118,7 +117,7 @@ function renderPlainText(statementData, plays) {
     function volumeCreditsFor(performance) {
         let result = 0;
         result += Math.max(performance.audience - 30, 0);
-        if ("comedy" === playFor(performance).type) {
+        if ("comedy" === performance.play.type) {
             result += Math.floor(performance.audience / 5);
         }
         return result;
