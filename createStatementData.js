@@ -10,11 +10,7 @@ class PerformanceCalculator {
 
         switch (this.play.type) {
             case "tragedy":
-                result = 40000;
-                if (this.performance.audience > 30) {
-                    result += 1000 * (this.performance.audience - 30);
-                }
-                break;
+                throw "서브 클래스를 사용하도록 변경되었음";
             case "comedy":
                 result = 30000;
                 if (this.performance.audience > 20) {
@@ -48,7 +44,7 @@ export default function createStatementData(invoice, plays) {
     return result;
 
     function enrichPerformance(performance) {
-        const calculator = new PerformanceCalculator(performance, playFor(performance));
+        const calculator = createPerformanceCalculator(performance, playFor(performance));
         const result = Object.assign({}, performance);
         result.play = calculator.play;
         result.amount = calculator.amount;
@@ -59,7 +55,7 @@ export default function createStatementData(invoice, plays) {
     function playFor(performance) {
         return plays[performance.playID];
     }
-    
+
     function totalAmount(data) {
         return data.performances.reduce((total, p) => total + p.amount, 0);
     }
@@ -67,4 +63,27 @@ export default function createStatementData(invoice, plays) {
     function totalVolumeCredits(data) {
         return data.performances.reduce((total, p) => total + p.volumeCredits, 0);
     }
+}
+
+function createPerformanceCalculator(performance, play) {
+    switch (play.type) {
+        case "tragedy": return new TragedyCalculator(performance, play);
+        case "comedy": return new ComedyCalculator(performance, play);
+        default:
+            throw new Error(`알 수 없는 장르 ${play.type}`);
+    }
+}
+
+class TragedyCalculator extends PerformanceCalculator {
+    get amount() {
+        let result = 40000;
+        if (this.performance.audience > 30) {
+            result += 1000 * (this.performance.audience - 30);
+        }
+        return result;
+    }
+}
+
+class ComedyCalculator extends PerformanceCalculator {
+
 }
