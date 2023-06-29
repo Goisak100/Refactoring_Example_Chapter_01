@@ -35,10 +35,10 @@ export const invoices = [
 ]
 
 export default function statement(invoice, plays) {
-    const statementData = {
-        customer: invoice.customer,
-        performances: invoice.performances.map(enrichPerformance),
-    };
+    const statementData = {};
+    statementData.customer = invoice.customer;
+    statementData.performances = invoice.performances.map(enrichPerformance);
+    statementData.totalAmount = totalAmount(statementData);
     return renderPlainText(statementData);
 
     function enrichPerformance(performance) {
@@ -85,6 +85,14 @@ export default function statement(invoice, plays) {
         }
         return result;
     }
+
+    function totalAmount(statementData) {
+        let result = 0;
+        for (let perf of statementData.performances) {
+            result += perf.amount;
+        }
+        return result;
+    }
 }
 
 function renderPlainText(statementData) {
@@ -92,7 +100,7 @@ function renderPlainText(statementData) {
     for (let perf of statementData.performances) {
         result += `${perf.play.name}: ${usd(perf.amount)} (${perf.audience}석)\n`;
     }
-    result += `총액: ${usd(totalAmount())}\n`;
+    result += `총액: ${usd(statementData.totalAmount)}\n`;
     result += `적립 포인트: ${totalVolumeCredits()}점\n`;
     return result;
 
@@ -104,19 +112,11 @@ function renderPlainText(statementData) {
         }).format(number / 100);
     }
 
-    function totalAmount() {
-        let result = 0;
-        for (let perf of statementData.performances) {
-            result += perf.amount;
-        }
-        return result;
-    }
-
     function totalVolumeCredits() {
         let volumeCredits = 0;
         for (let perf of statementData.performances) {
             volumeCredits += perf.volumeCredits;
         }
-        return volumeCredits;
+        return volumeCredits;   
     }
 }
