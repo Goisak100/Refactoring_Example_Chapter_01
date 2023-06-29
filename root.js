@@ -87,30 +87,26 @@ export default function statement(invoice, plays) {
         return result;
     }
 
-    function totalAmount(statementData) {
-        let result = 0;
-        for (let perf of statementData.performances) {
-            result += perf.amount;
-        }
-        return result;
+    function totalAmount(data) {
+        return data.performances.reduce((total, p) => total + p.amount, 0);
     }
 
-    function totalVolumeCredits(statementData) {
+    function totalVolumeCredits(data) {
         let volumeCredits = 0;
-        for (let perf of statementData.performances) {
+        for (let perf of data.performances) {
             volumeCredits += perf.volumeCredits;
         }
         return volumeCredits;   
     }
 }
 
-function renderPlainText(statementData) {
-    let result = `청구 내역 (고객명: ${statementData.customer})\n`;
-    for (let perf of statementData.performances) {
+function renderPlainText(data) {
+    let result = `청구 내역 (고객명: ${data.customer})\n`;
+    for (let perf of data.performances) {
         result += `${perf.play.name}: ${usd(perf.amount)} (${perf.audience}석)\n`;
     }
-    result += `총액: ${usd(statementData.totalAmount)}\n`;
-    result += `적립 포인트: ${statementData.totalVolumeCredits}점\n`;
+    result += `총액: ${usd(data.totalAmount)}\n`;
+    result += `적립 포인트: ${data.totalVolumeCredits}점\n`;
     return result;
 
     function usd(number) {
