@@ -35,14 +35,19 @@ export const invoices = [
 ]
 
 // 지금부터 하는 작업은 계산 로직에서 데이터를 분리하는 것이다.
-// invoice.performance를 statementData로 옮겼다.
-// 나머지 변수들도 모두 옮긴 다음에, invoice 매개변수를 제거했다.
+// invoice.performance의 각 요소에 enrichPerformance 메소드를 실행함으로써
+//  얕은 복사를 수행 후에 반환한다. 이는 불변성을 위함이다.
 export default function statement(invoice, plays) {
     const statementData = {
         customer: invoice.customer,
-        performance: invoice.performance,
+        performance: invoice.performance.map(enrichPerformance),
     };
     return renderPlainText(statementData, plays);
+
+    function enrichPerformance(performance) {
+        const result = Object.assign({}, performance);
+        return result;
+    }
 }
 
 function renderPlainText(statementData, plays) {
