@@ -36,7 +36,7 @@ export const invoices = [
     }
 ]
 
-export default function statement(invoice, plays) {
+export function statement(invoice, plays) {
     return renderPlainText(createStatementData(invoice, plays));
 }
 
@@ -48,6 +48,10 @@ function renderPlainText(data) {
     result += `총액: ${usd(data.totalAmount)}\n`;
     result += `적립 포인트: ${data.totalVolumeCredits}점\n`;
     return result;
+}
+
+export function htmlStatement(invoice, plays) {
+    return renderHtml(createStatementData(invoice, plays));
 }
 
 // 지금 당장은 구현할 필요가 없으므로 미구현
