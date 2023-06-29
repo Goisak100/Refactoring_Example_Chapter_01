@@ -1,0 +1,20 @@
+<html>
+    <head>
+        <title>리팩터링 1챕터</title>
+        <script type="module" src="./root.js"></script>
+    </head>
+    <body>
+        <div id ="result"></div>
+        <script type="module">
+            import statement, {
+                invoices,
+                plays
+            } from './root.js';
+
+            const invoice = invoices[0];
+            const result = statement(invoice, plays);
+
+            document.getElementById("result").innerText = result;
+        </script>
+    </body>
+</html>
