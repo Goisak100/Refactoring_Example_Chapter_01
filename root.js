@@ -35,16 +35,17 @@ export const invoices = [
 ]
 
 // 지금부터 하는 작업은 계산 로직에서 데이터를 분리하는 것이다.
-// invoice.customer를 statementData로 옮겼다.
+// invoice.performance를 statementData로 옮겼다.
+// 나머지 변수들도 모두 옮긴 다음에, invoice 매개변수를 제거했다.
 export default function statement(invoice, plays) {
     const statementData = {
         customer: invoice.customer,
         performance: invoice.performance,
     };
-    return renderPlainText(statementData, invoice, plays);
+    return renderPlainText(statementData, plays);
 }
 
-function renderPlainText(statementData, invoice, plays) {
+function renderPlainText(statementData, plays) {
     let result = `청구 내역 (고객명: ${statementData.customer})\n`;
     for (let perf of statementData.performance) {
         result += `${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience}석)\n`;
@@ -91,7 +92,7 @@ function renderPlainText(statementData, invoice, plays) {
 
     function totalAmount() {
         let result = 0;
-        for (let perf of invoice.performance) {
+        for (let perf of statementData.performance) {
             result += amountFor(perf);
         }
         return result;
@@ -99,7 +100,7 @@ function renderPlainText(statementData, invoice, plays) {
 
     function totalVolumeCredits() {
         let volumeCredits = 0;
-        for (let perf of invoice.performance) {
+        for (let perf of statementData.performance) {
             volumeCredits += volumeCreditsFor(perf);
         }
         return volumeCredits;
