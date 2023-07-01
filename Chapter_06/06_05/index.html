@@ -1,0 +1,16 @@
+<html>
+    <head>
+        <title>리팩터링 6챕터</title>
+        <script type="module" src="./test.js"></script>
+    </head>
+    <body>
+        <div id ="result"></div>
+        <script type="module">
+            import { test } from './test.js';
+
+            const result = test();
+
+            document.getElementById("result").innerText = result;
+        </script>
+    </body>
+</html>

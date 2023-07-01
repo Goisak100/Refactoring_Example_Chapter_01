@@ -56,7 +56,7 @@ export function htmlStatement(invoice, plays) {
 
 // 지금 당장은 구현할 필요가 없으므로 미구현
 function renderHtml(data) {
-
+    
 }
 
 function usd(number) {
