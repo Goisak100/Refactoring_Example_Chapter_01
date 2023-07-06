@@ -9,11 +9,11 @@ class Priority {
 class Order {
     constructor(data) {
         this._name = data.name;
-        this._priority = data.priority;
+        this._priority = new Priority(data.priority);
     }
 
     get name() { return this._name; }
-    get priority() { return this._priority; }
+    get priority() { return this._priority.toString(); }
 }
 
 const orders = [
