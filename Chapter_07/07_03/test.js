@@ -1,11 +1,12 @@
 class Order {
     constructor(data) {
-        this.name = data.name;
-        this.priority = data.priority;
+        this._name = data.name;
+        this._priority = data.priority;
     }
 
+    get name() { return this._name; }
+    get priority() { return this._priority; }
 }
-
 
 const orders = [
     new Order({ name: 'A', priority: 'low' }),
