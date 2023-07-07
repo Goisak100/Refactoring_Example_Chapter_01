@@ -11,6 +11,12 @@ class Priority {
     toString() { return this._value; }
     get _index() { return Priority.legalValues().findIndex(s => s === this._value) }
     static legalValues() { return ['low', 'normal', 'high', 'rush']; }
+    equals(other) {
+        if (other instanceof Priority) {
+            return other._value === this._value;
+        }
+        return false;
+    }
     higherThan(other) { return this._index > other._index; }
 }
 
@@ -32,5 +38,11 @@ const orders = [
 ]
 
 export function test() {
+
+    const a = new Priority("normal");
+    const b = new Priority("normal");
+    console.log(a === b); // false
+    console.log(a.equals(b)); // true
+
     return orders.filter(o => o.priority.higherThan(new Priority('normal'))).map(o => o.priority.toString());
 }
