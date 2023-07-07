@@ -13,7 +13,7 @@ class Order {
     }
 
     get name() { return this._name; }
-    get priority() { return this._priority.toString(); }
+    get priorityString() { return this._priority.toString(); }
 }
 
 const orders = [
@@ -24,7 +24,7 @@ const orders = [
 ]
 
 export function test() {
-    return orders.filter(o => o.priority === 'high' || o.priority === 'rush').map(o => o.priority);
+    return orders.filter(o => o.priorityString === 'high' || o.priorityString === 'rush').map(o => o.priorityString);
 }
 
 
