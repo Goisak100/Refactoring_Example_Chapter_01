@@ -1,16 +1,23 @@
 class Priority {
     constructor(value) {
         if (value instanceof Priority) return value;
-        this._value = value;
+        if (Priority.legalValues().includes(value)) {
+            this._value = value;
+        } else {
+            throw new Error(`유효하지 않은 값: ${value}`);
+        }
     }
 
     toString() { return this._value; }
+    get _index() { return Priority.legalValues().findIndex(s => s === this._value) }
+    static legalValues() { return ['low', 'normal', 'high', 'rush']; }
+    higherThan(other) { return this._index > other._index; }
 }
 
 class Order {
     constructor(data) {
         this._name = data.name;
-        this._priority = new Priority(new Priority(data.priority));
+        this._priority = new Priority(data.priority);
     }
 
     get name() { return this._name; }
@@ -25,5 +32,5 @@ const orders = [
 ]
 
 export function test() {
-    return orders.filter(o => o.priority.toString() === 'high' || o.priority.toString() === 'rush').map(o => o.priority.toString());
+    return orders.filter(o => o.priority.higherThan(new Priority('normal'))).map(o => o.priority.toString());
 }
