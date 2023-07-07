@@ -1,5 +1,6 @@
 class Priority {
     constructor(value) {
+        if (value instanceof Priority) return value;
         this._value = value;
     }
 
@@ -9,7 +10,7 @@ class Priority {
 class Order {
     constructor(data) {
         this._name = data.name;
-        this._priority = new Priority(data.priority);
+        this._priority = new Priority(new Priority(data.priority));
     }
 
     get name() { return this._name; }
